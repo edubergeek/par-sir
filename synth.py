@@ -2,8 +2,8 @@ import sir3d
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-b","--batch", type=int, default=256, help="where to find the sir files")
-parser.add_argument("-p","--path", default='./3D/', help="where to find the sir files")
+parser.add_argument("-b","--batch", type=int, default=256, help="batchsize")
+parser.add_argument("-p","--path", default='./3D/', help="directory containing the SIR/MURaM files")
 parser.add_argument("-X","--x1", type=int, default=0, help="x origin")
 parser.add_argument("-Y","--y1", type=int, default=0, help="y origin")
 parser.add_argument("-W","--width", type=int, default=0, help="width")
