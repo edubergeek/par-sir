@@ -4,6 +4,7 @@ from sir3d.configuration import Configuration
 import numpy as np
 import os
 import scipy.stats
+import scipy.constants
 import logging
 import h5py
 import scipy.integrate as integ
@@ -378,8 +379,7 @@ class Model(object):
         log_T = np.log10(T)
         log_P = np.log10(P)
         log_tau = np.log10(tau500)
-        k_b = 1.3807e-16
-        Pe = Ne * k_b * T
+        Pe = Ne * scipy.constants.k * T
 
         # TODO add boolean to eliminate the kappa and tau interpolations below
         it0 = np.searchsorted(self.T_kappa5, log_T) - 1
@@ -457,9 +457,8 @@ class Model(object):
 
     def synth2d(self, T, P, rho, vz, Bx, By, Bz, tau500, Ne, interpolate_model=False):
 
-        k_b = 1.3807e-16
         n = T.shape[1]
-        Pe = Ne * k_b * T
+        Pe = Ne * scipy.constants.k * T
         log_T = np.log10(T)
         log_P = np.log10(P)
         log_tau = np.log10(tau500)
