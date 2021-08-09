@@ -1,40 +1,26 @@
 #!/bin/bash
 
-# add optarg code for
-# number of worker threads *note add 1 for the master
-# cubePath
-# sirPath
-# step include filter regex
-# step exclude filter regex
-# file prefix *default stokes-
-# x and y range limits
-# force flag to force preprocessing and synthesis
+step=$1
+cubePath=${2:-.}
 
-export NTHREAD=18
+if test ! -e ${cubePath}/subdomain_0.${step}
+then
+  echo Cube step $step not found at in ${cubePath}
+  exit 1
+fi
 
-cubePath=./3D
-ls $cubePath/subdomain_0.* | while read t
-do
-  step=${t##*.}
-  echo $step
-  sirPath=./3D-$step
-  mkdir -p $sirPath
-  for f in $cubePath/subdomain_*.$step
-  do
-    fname=`basename $f`
-    ln -s $f $sirPath/$fname
-  done
-  #if [ ! -e $sirPath/rho.float ]
-  #then
-  #  echo "Preprocessing cube $step ..."
-  #  python cube2sir.py $step --sirpath=$sirPath
-  #fi
+echo Path $cubePath
+echo Step $step
+ls $cubePath/*.$step
 
-  if [ ! -e $sirPath/stokes-*.h5 ]
-  then
-    sed -e "s/##STEP##/$step/g" <synth.ini >$sirPath/synth.ini
-    #echo "Synthesizing $step ..."
-    #mpiexec -n 9 python synth.py --path=$sirPath -X 512 -W 256 -Y 512 -H 256
-    #mpiexec -n $NTHREAD python synth.py --path=$sirPath
-  fi
-done
+sed -e "s@##STEP##@$step@g" -e "s@##PATH##@$cubePath@g" <synth.ini >$cubePath/synth-$step.ini
+cat $cubePath/synth-$step.ini
+
+cat <<EOF
+
+To synthesize the entire cube run the following commands:
+
+cd $cubePath
+mpiexec -n 18 python `pwd`/synth.py --init=synth-$step.ini
+EOF
+
