@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -N sir_##MODEL##_##STEP##-##WL##
+#PBS -A UHWM0040
+#PBS -l walltime=03:30:00
+#PBS -l select=1:ncpus=36:mpiprocs=36
+#PBS -m ae
+#PBS -M dodds@hawaii.edu
+#PBS -j oe
+#PBS -o sir-##MODEL##-##STEP##-##WL##
+#PBS -q regular
+
+source /etc/profile.d/modules.sh
+source $HOME/.bashrc
+conda activate SIR
+#module load gnu/9.1.0
+#module load openmpi/4.0.5
+
+export TMPDIR=/glade/scratch/${USER}/tmp
+mkdir -p $TMPDIR
+
+cd $HOME/scratch/##MODEL##/SIR
+mpiexec -n 36 python $HOME/par-sir/synth.py --batch=512 --init=synth-##STEP##-##WL##.ini
+
