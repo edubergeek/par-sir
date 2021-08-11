@@ -302,7 +302,8 @@ class Model(object):
             'SM':62,'EU':63,'GD':64,'TB':65,'DY':66,'HO':67,'ER':68,'TM':69,'YB':70,'LU':71,'HF':72,'TA':73,'W':74,
             'RE':75,'OS':76,'IR':77,'PT':78,'AU':79,'HG':80,'TL':81,'PB':82,'BI':83,'PO':84,'AT':85,'RN':86,
             'FR':87,'RA':88,'AC':89,'TH':90,'PA':91,'U':92}
-        states = {'S': 0, 'P': 1, 'D': 2, 'F': 3, 'G': 4, 'H': 5, 'I': 6}
+        states = {'S': 0, 'P': 1, 'D': 2, 'F': 3, 'G': 4, 'H': 5, 'I': 6, 'K': 7, 'L': 8, 'M': 9, 'N': 10, 'O': 11, 'Q': 12, 
+            'p': 13, 'f': 14, 'h': 15, 'k': 16, 'm': 17, 'o': 18, 'r': 19, 't': 20, 'u': 21, 'v': 22, 'w': 23}
 
         for k, v in spectral.items(): 
 
@@ -519,7 +520,7 @@ class Model(object):
                     self.intpltau(taufino, ltau[ind], self.vz_multiplier*vz[ind,loop]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[ind,loop]),
                     self.intpltau(taufino, ltau[ind], self.by_multiplier*By[ind,loop]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[ind,loop]), self.macroturbulence)
             else:
-                stokes_out[:,loop,:], error = sir_code.synth(1, self.n_lambda_sir, log_tau[:,loop], T[:,loop], Pe[:, loop], self.zeros[0:n], 
+                stokes_out[:,loop,:], error = sir_code.synth(1, self.n_lambda_sir, log_tau[:,loop], T[:,loop], Pe[:, loop], self.zeros[0:self.nz], 
                     self.vz_multiplier*vz[:,loop], self.bx_multiplier*Bx[:,loop], self.by_multiplier*By[:,loop], self.bz_multiplier*Bz[:,loop], self.macroturbulence)
 
             if (error != 0):
