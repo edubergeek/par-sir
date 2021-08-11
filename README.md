@@ -16,6 +16,7 @@ Parallel SIR Stokes synthesis from MURaM cubes
 | synth.sh | batch synthesis of cubes  |
 
 **Note regarding LINEAS**
+
 Following are valid integer spin encodings:
 `S:0 P:1 D:2 F:3 G:4 H:5 I:6 K:7 L:8 M:9 N:10 O:11 Q:12`
 
