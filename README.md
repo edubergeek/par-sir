@@ -1,5 +1,9 @@
 # par-sir
-Parallel SIR Stokes synthesis from MURaM cubes
+**Parallel SIR Stokes synthesis from MURaM cubes**
+**par-sir** is tested and optimized for HPC MPI execution using gfortran or Intel compilers and includes support for batch job submission in PBS and Slurm.
+
+**par-sir** is derived from, and depends upon, the [3d_sir code](https://github.com/aasensio/3d_sir): Copyright (c) 2018 Andrés Asensio Ramos
+The 3d_sir code is included a submodule of **par-sir** with code overlays in the synth subdirectory.
 
 | Filename | Description |
 | -------- | ----------- |
@@ -14,6 +18,14 @@ Parallel SIR Stokes synthesis from MURaM cubes
 | synthlos.py | synthesize a single line of sight |
 | synth.py | synthesize a cube or a subset of a cube |
 | synth.sh | batch synthesis of cubes  |
+
+**Note regarding MURaM cube and 3d_sir axes**
+The MURaM simulation uses a solar Y, X, Z reference frame. This is the order the axes are written to disk.
+The 3d_sir ini file parsing has been modified to allow explicit declaration of the ordering in the cube of the solar cartesian coordinate axes using:
+- **Type** ` Type = 'MURAM'`
+- **XYZ** `XYZ = 1, 0, 2`
+- **Dimensions** `Dimensions = 1536, 1536, 128`
+This configuration specifies that Solar Y (+=North,-=South) is MURaM axis 0, Solar X (+=West,-=East) is MURaM axis 1 and Line of Sight (Z) is MURaM axis 2. 
 
 **Note regarding LINEAS**
 
