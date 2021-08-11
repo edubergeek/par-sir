@@ -14,3 +14,10 @@ Parallel SIR Stokes synthesis from MURaM cubes
 | synthlos.py | synthesize a single line of sight |
 | synth.py | synthesize a cube or a subset of a cube |
 | synth.sh | batch synthesis of cubes  |
+
+**Note regarding LINEAS**
+Following are valid integer spin encodings:
+`S:0 P:1 D:2 F:3 G:4 H:5 I:6 K:7 L:8 M:9 N:10 O:11 Q:12`
+
+Following are valid half-integer spin encodings:
+`p:1/2 f:3/2 h:5/2 k:7/2 m:9/2 o:11/2 r:13/2 t:15/2 u:17/2 v:19/2 w:21/2`
