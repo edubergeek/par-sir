@@ -380,7 +380,7 @@ class Model(object):
         log_T = np.log10(T)
         log_P = np.log10(P)
         log_tau = np.log10(tau500)
-        Pe = Ne * scipy.constants.k * T
+        Pe = Ne * scipy.constants.k * 1e7 * T # convert SI to cgs units - kg to g and m to cm2
 
         # TODO add boolean to eliminate the kappa and tau interpolations below
         it0 = np.searchsorted(self.T_kappa5, log_T) - 1
@@ -459,7 +459,7 @@ class Model(object):
     def synth2d(self, T, P, rho, vz, Bx, By, Bz, tau500, Ne, interpolate_model=False):
 
         n = T.shape[1]
-        Pe = Ne * scipy.constants.k * T
+        Pe = Ne * scipy.constants.k * 1e7 * T # convert SI to cgs units - kg to g and m to cm2
         log_T = np.log10(T)
         log_P = np.log10(P)
         log_tau = np.log10(tau500)
