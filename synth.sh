@@ -48,6 +48,6 @@ cat <<EOF
 To synthesize the entire cube run the following commands:
 
 cd $sirPath
-mpiexec -n 36 python `pwd`/synth.py --batch512 --init=synth-$step-$waveLength.ini
+mpiexec -n 36 python `pwd`/synth.py --init=synth-$step-$waveLength.ini
 EOF
 
