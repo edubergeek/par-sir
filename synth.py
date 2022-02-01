@@ -5,17 +5,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-b","--batch", type=int, default=128, help="batchsize")
 parser.add_argument("-p","--path", default='./', help="directory containing the SIR/MURaM files")
 parser.add_argument("-i","--init", default='synth.ini', help="3DSIR configuration file")
-parser.add_argument("-X","--x1", type=int, default=0, help="x origin")
-parser.add_argument("-Y","--y1", type=int, default=0, help="y origin")
+parser.add_argument("-X","--x", type=int, default=0, help="x origin")
+parser.add_argument("-Y","--y", type=int, default=0, help="y origin")
 parser.add_argument("-W","--width", type=int, default=0, help="width")
 parser.add_argument("-H","--height", type=int, default=0, help="height")
 args = parser.parse_args()
 
 sirPath=args.path
 iniFile=args.init
-x1=args.x1
+x1=args.x
 x2=x1 + args.width
-y1=args.y1
+y1=args.y
 y2=y1 + args.height
 batchSize=args.batch
 
