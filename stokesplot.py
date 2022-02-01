@@ -7,8 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-p","--path", default='./3D/stokes.h5', help="which stokes file to visualize")
 parser.add_argument("-s","--slice", type=int, default=0, help="which x slice to visualize QUV")
 parser.add_argument("-w","--wl", type=int, default=0, help="which wl to visualize I")
-parser.add_argument("-X","--x1", type=int, default=0, help="x origin")
-parser.add_argument("-Y","--y1", type=int, default=0, help="y origin")
+parser.add_argument("-X","--x", type=int, default=0, help="x origin")
+parser.add_argument("-Y","--y", type=int, default=0, help="y origin")
 parser.add_argument("-W","--width", type=int, default=0, help="width")
 parser.add_argument("-H","--height", type=int, default=0, help="height")
 parser.add_argument("-I","--stokesI", dest='stokesI', action='store_true', help="plot Stokes I")
@@ -18,9 +18,9 @@ parser.add_argument("-V","--stokesV", dest='stokesV', action='store_true', help=
 args = parser.parse_args()
 
 stokesPath=args.path
-x1=args.x1
+x1=args.x
 x2=x1 + args.width
-y1=args.y1
+y1=args.y
 y2=y1 + args.height
 XSlice=args.slice
 WL=args.wl
@@ -51,6 +51,12 @@ lambdaWLStokes = lambdaWL[:,:,S]
 print(lambdaWLStokes.shape)
 patch = lambdaWLStokes[:,:]
 print(patch.shape)
+print(patch.mean())
+print(patch.var())
+
+patch = np.clip(patch, 0, 10)
+print(patch.mean())
+print(patch.var())
 
 imgplot = plt.imshow(patch, cmap='gray')
 plt.colorbar();
