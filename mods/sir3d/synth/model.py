@@ -369,7 +369,7 @@ class Model(object):
                 mult1, mult2, design1, design2, tam1, tam2, alfa, sigma, lambda0, lambda1, n_lambda)
                 
         self.n_lambda_sir = n_lambda
-        self.model.lambda_zeropoint = 1e3*wvl[0]
+        self.lambda_zeropoint = 1e3*wvl[0]
 
     def intpltau(self, newtau, oldtau, var):
         fX = interpolate.interp1d(oldtau, var, bounds_error=False, fill_value="extrapolate")

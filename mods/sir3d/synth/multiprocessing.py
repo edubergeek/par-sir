@@ -139,7 +139,7 @@ class Iterator(object):
         self.stokesI_db = self.f_stokes_out.create_dataset('I', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
         self.stokesQ_db = self.f_stokes_out.create_dataset('Q', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
         self.stokesU_db = self.f_stokes_out.create_dataset('U', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
-        self.stokesQ_db = self.f_stokes_out.create_dataset('V', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
+        self.stokesV_db = self.f_stokes_out.create_dataset('V', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
         self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
         self.f_stokes_out.attrs.create("lambda_zeropoint", self.model.lambda_zeropoint)
 
@@ -258,7 +258,7 @@ class Iterator(object):
         self.stokesI_db = self.f_stokes_out.create_dataset('I', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
         self.stokesQ_db = self.f_stokes_out.create_dataset('Q', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
         self.stokesU_db = self.f_stokes_out.create_dataset('U', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
-        self.stokesQ_db = self.f_stokes_out.create_dataset('V', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
+        self.stokesV_db = self.f_stokes_out.create_dataset('V', (self.model.ny, self.model.nx, self.model.n_lambda_sir), chunks=(64, 64, self.model.n_lambda_sir))
         self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
         self.f_stokes_out.attrs.create("lambda_zeropoint", self.model.lambda_zeropoint)
 
