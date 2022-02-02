@@ -1,0 +1,4 @@
+include sir3d/synth/data/LINEAS
+include sir3d/synth/data/ABUNDANCES
+include sir3d/synth/data/THEVENIN
+include sir3d/synth/data/kappa5000_eos_sir.h5
