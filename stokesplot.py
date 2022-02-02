@@ -5,7 +5,9 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p","--path", default='./3D/stokes.h5', help="which stokes file to visualize")
-parser.add_argument("-s","--slice", type=int, default=0, help="which x slice to visualize QUV")
+parser.add_argument("-s","--slice", type=int, default=-1, help="which x slice to visualize QUV")
+parser.add_argument("-c","--clip", dest='clipOutliers', default=False, action='store_true', help="clip outliers")
+parser.add_argument("-m","--colormap", default="gray", help="which colormap to plot with")
 parser.add_argument("-w","--wl", type=int, default=0, help="which wl to visualize I")
 parser.add_argument("-x","--px", type=int, default=-1, help="pixel col to plot")
 parser.add_argument("-y","--py", type=int, default=-1, help="pixel row to plot")
@@ -36,75 +38,59 @@ elif args.stokesV:
   S = 3
 else:
   S = 0
+cmap = args.colormap
 
-print("S == %d"%(S))
+#print("S == %d"%(S))
 
 dataStokes = h5py.File(stokesPath, 'r')
-print(dataStokes.keys())
-stokes = dataStokes['stokes']
-print(stokes.shape)
+#print(dataStokes.keys())
+sI = dataStokes['I']
+sQ = dataStokes['Q']
+sU = dataStokes['U']
+sV = dataStokes['V']
+zp = dataStokes.attrs["lambda_zeropoint"]
+wl = 1e-4 * (dataStokes["lambda"][:] + zp)
 
+# plotSstokes profiles for a single pixel
 if (args.px + args.py > 0):
-  fig, axs = plt.subplots(2, 2, figsize=(5, 5))
-  lambdaIX = stokes[args.py,args.px,:,:]
-  print(lambdaIX.shape)
-  lambdaI = stokes[args.py,args.px,0,:]
-  lambdaQ = stokes[args.py,args.px,1,:]
-  lambdaU = stokes[args.py,args.px,2,:]
-  lambdaV = stokes[args.py,args.px,3,:]
-  wl = np.linspace(6300.8521, 6303.3119, num=276) / 10.0
-  axs[0, 0].plot(wl, lambdaI)
+  fig, axs = plt.subplots(2, 2, figsize=(10, 8), constrained_layout=True)
+  wI = sI[args.py,args.px,:]
+  wQ = sQ[args.py,args.px,:]
+  wU = sU[args.py,args.px,:]
+  wV = sV[args.py,args.px,:]
+  axs[0, 0].plot(wl, wI)
   axs[0, 0].set_title('I')
-  axs[0, 1].plot(wl, lambdaQ)
+  axs[0, 1].plot(wl, wQ)
   axs[0, 1].set_title('Q')
-  axs[1, 0].plot(wl, lambdaU)
+  axs[1, 0].plot(wl, wU)
   axs[1, 0].set_title('U')
-  axs[1, 1].plot(wl, lambdaV)
+  axs[1, 1].plot(wl, wV)
   axs[1, 1].set_title('V')
-  #plt.gca().invert_yaxis()
+  plt.show()
+elif (XSlice >= 0):
+  fig, axs = plt.subplots(1, 3, figsize=(6, 6), constrained_layout=True)
+  butterfly = sQ[:,XSlice,:]
+  axs[0].imshow(butterfly, cmap=cmap, interpolation='nearest')
+  butterfly = sU[:,XSlice,:]
+  axs[1].imshow(butterfly, cmap=cmap, interpolation='nearest')
+  butterfly = sV[:,XSlice,:]
+  axs[2].imshow(butterfly, cmap=cmap, interpolation='nearest')
+  plt.gca().invert_yaxis()
+  for ax in axs.flatten():  # flatten in case you have a second row at some point
+    ax.set_aspect('auto')
   plt.show()
 else:
+  imgs = (sI, sQ, sU, sV)
   if (args.width * args.height > 0):
-    lambdaWL = stokes[y1:y2,x1:x2,:,WL]
+    img = imgs[S][y1:y2,x1:x2,WL]
   else:
-    lambdaWL = stokes[:,:,:,WL]
-  print(lambdaWL.shape)
-  lambdaWLStokes = lambdaWL[:,:,S]
-  print(lambdaWLStokes.shape)
-  patch = lambdaWLStokes[:,:]
-  print(patch.shape)
-  print(patch.mean())
-  print(patch.var())
+    img = imgs[S][:,:,WL]
+  if args.clipOutliers:
+    print("original: %6.4f %6.4f %6.4f %6.4f"%(img.mean(), img.var(), img.min(), img.max()))
+    img = np.clip(img, 0, 10)
+    print("Clipped:  %6.4f %6.4f %6.4f %6.4f"%(img.mean(), img.var(), img.min(), img.max()))
   
-  patch = np.clip(patch, 0, 10)
-  print(patch.mean())
-  print(patch.var())
-  
-  imgplot = plt.imshow(patch, cmap='gray')
+  imgplot = plt.imshow(img, cmap=cmap)
   plt.colorbar();
-  plt.gca().invert_yaxis()
-  plt.show()
-  
-  if (XSlice == -1):
-    if (x1 * x2 > 0):
-      XSlice = int((x1 + x2) / 2)
-    else:
-      XSlice = int(stokes.shape[1] / 2)
-  lambdaIX = stokes[:,XSlice,:,:]
-  print(lambdaIX.shape)
-  if (x1 * y1 * x2 * y2 > 0):
-    quv = lambdaIX[y1:y2,:,:]
-  else:
-    quv = lambdaIX[:,:,:]
-  print(quv.shape)
-  
-  fig, axs = plt.subplots(1, 3, figsize=(5, 5))
-  patch = quv[:,1,:]
-  print(patch.shape)
-  axs[0].imshow(patch, cmap='gray')
-  patch = quv[:,2,:]
-  axs[1].imshow(patch, cmap='gray')
-  patch = quv[:,3,:]
-  axs[2].imshow(patch, cmap='gray')
   plt.gca().invert_yaxis()
   plt.show()
