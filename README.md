@@ -67,7 +67,8 @@ For our project we use the abundances from Grevesse (1998):
 
 We have changed the hard-coded values in leyendo.f and interface.f90 and provided the Grevesse (1998) values
 in the currently unused data file "ABUNDANCES".
-**TODO** replace hard-coded abundances with a vector intialized from a configured abundance file
+
+	**TODO** replace hard-coded abundances with a vector intialized from a configured abundance file
 and passed to sir_code.synth() once per worker thread.
 
 ### changes to model.py and multiprocessing.py
@@ -76,7 +77,7 @@ There are three significant modifications to these two files.
 1. Parsing the configuration file for new configuration settings
 1. Reordering the axes to be consistent with solar coordinates and optimum for Python
 1. Replacing the interpolated atmosphere with the values from the MURaM cube
-1. Changing the 5h dataset schema
+1. Changing the h5 dataset schema
 
 ## Helper scripts
 The script "synth.sh" can be used to automatically create a cube specific ini file from the synth.ini template. 
