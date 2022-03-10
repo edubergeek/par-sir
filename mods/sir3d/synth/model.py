@@ -382,6 +382,7 @@ class Model(object):
         log_P = np.log10(P)
         log_tau = np.log10(tau500)
         Pe = Ne * scipy.constants.k * 1e7 * T # convert SI to cgs units - kg to g and m to cm2
+        uT = np.zeros((T.shape))
 
         # TODO add boolean to eliminate the kappa and tau interpolations below
         it0 = np.searchsorted(self.T_kappa5, log_T) - 1
@@ -434,10 +435,11 @@ class Model(object):
                 self.intpltau(taufino, log_tau[ind], self.vz_multiplier*vz[ind]), self.intpltau(taufino, log_tau[ind], self.bx_multiplier*Bx[ind]),
                 self.intpltau(taufino, log_tau[ind], self.by_multiplier*By[ind]), self.intpltau(taufino, log_tau[ind], self.bz_multiplier*Bz[ind]), self.macroturbulence)
         else:
-            stokes, error = sir_code.synth(1, self.n_lambda_sir, log_tau, T, Pe, self.zeros, self.vz_multiplier*vz, 
+            stokes, error = sir_code.synth(1, self.n_lambda_sir, log_tau, T, Pe, uT, self.vz_multiplier*vz, 
                 self.bx_multiplier*Bx, self.by_multiplier*By, self.bz_multiplier*Bz, self.macroturbulence)        
 
         if (error != 0):
+            logging.warning('synth returned error: %d'%(error))
             stokes = -99.0 * np.ones_like(stokes)        
 
         # We want to interpolate the model to certain isotau surfaces
@@ -525,6 +527,7 @@ class Model(object):
                     self.vz_multiplier*vz[:,loop], self.bx_multiplier*Bx[:,loop], self.by_multiplier*By[:,loop], self.bz_multiplier*Bz[:,loop], self.macroturbulence)
 
             if (error != 0):
+                logging.warning('synth returned error: %d'%(error))
                 stokes_out[:,loop,:] = -99.0
 
             # We want to interpolate the model to certain isotau surfaces
