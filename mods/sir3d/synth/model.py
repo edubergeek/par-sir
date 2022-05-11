@@ -42,7 +42,7 @@ class Model(object):
             self.configuration = Configuration(config)
 
             self.use_configuration(self.configuration.config_dict)
-            # print('clip or not:',self.clip_tau,self.clip_tau_min,self.clip_tau_max)
+
         if (self.rank == 0):
 
             if (self.eos_type == 'MANCHA'):            
