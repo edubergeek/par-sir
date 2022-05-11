@@ -42,7 +42,7 @@ class Model(object):
             self.configuration = Configuration(config)
 
             self.use_configuration(self.configuration.config_dict)
-
+            # print('clip or not:',self.clip_tau,self.clip_tau_min,self.clip_tau_max)
         if (self.rank == 0):
 
             if (self.eos_type == 'MANCHA'):            
@@ -124,6 +124,11 @@ class Model(object):
         self.output_file = config_dict['general']['stokes output']
         self.atmosphere_type = config_dict['atmosphere']['type']
         self.eos_type = config_dict['general']['eos']
+        self.clip_tau = bool(config_dict['general']['clip_tau']=='True')
+        self.clip_tau_max = float(config_dict['general']['clip_tau_max'])
+        self.clip_tau_min = float(config_dict['general']['clip_tau_min'])
+        if self.clip_tau:
+            self.logger.info('Clip log10(tau) from : {0}'.format(self.clip_tau_min)+' to {0}'.format(self.clip_tau_max))
 
         self.logger.info('Output Stokes file : {0}'.format(self.output_file))
 
@@ -187,7 +192,7 @@ class Model(object):
                 self.tau_file = config_dict['atmosphere']['tau500']
                 self.ne_file = config_dict['atmosphere']['ne']
 
-                self.zeros = np.zeros(self.ny)                                            
+                self.zeros = np.zeros(np.max([self.nx,self.ny,self.nz]))                                            
 
                 self.maximum_tau = float(config_dict['atmosphere']['maximum tau'])
 
@@ -466,6 +471,7 @@ class Model(object):
         log_T = np.log10(T)
         log_P = np.log10(P)
         log_tau = np.log10(tau500)
+        idx=np.arange(log_tau.shape[0])
 
         stokes_out = np.zeros((5,n,self.n_lambda_sir))
 
@@ -523,8 +529,11 @@ class Model(object):
                     self.intpltau(taufino, ltau[ind], self.vz_multiplier*vz[ind,loop]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[ind,loop]),
                     self.intpltau(taufino, ltau[ind], self.by_multiplier*By[ind,loop]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[ind,loop]), self.macroturbulence)
             else:
-                stokes_out[:,loop,:], error = sir_code.synth(1, self.n_lambda_sir, log_tau[:,loop], T[:,loop], Pe[:, loop], self.zeros[0:self.nz], 
-                    self.vz_multiplier*vz[:,loop], self.bx_multiplier*Bx[:,loop], self.by_multiplier*By[:,loop], self.bz_multiplier*Bz[:,loop], self.macroturbulence)
+                # clipping between clip_min<log_10(tau)<clip_max
+                if self.clip_tau:
+                    idx=np.intersect1d(np.where(log_tau[:,loop]>self.clip_tau_min)[0],np.where(log_tau[:,loop]<self.clip_tau_max)[0])
+
+                stokes_out[:,loop,:], error = sir_code.synth(1, self.n_lambda_sir, log_tau[idx,loop], T[idx,loop], Pe[idx, loop], self.zeros[idx],self.vz_multiplier*vz[idx,loop], self.bx_multiplier*Bx[idx,loop], self.by_multiplier*By[idx,loop], self.bz_multiplier*Bz[idx,loop], self.macroturbulence)
 
             if (error != 0):
                 logging.warning('synth returned error: %d'%(error))
